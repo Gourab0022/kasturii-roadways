@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel | Kasturii Roadways</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050a15; --surface: #0c1526; --card: #111d33;
+      --gold: #c9a84c; --gold-g: rgba(201,168,76,0.12);
+      --border: rgba(201,168,76,0.15); --border-h: rgba(201,168,76,0.4);
+      --text: #f0f4ff; --muted: #7a90b8; --wa: #25d366;
+      --red: #ff5b5b; --green: #25d366;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; }
+    a { color: inherit; text-decoration: none; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px; background: var(--surface); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0;
+      padding: 24px 0; overflow-y: auto; z-index: 100;
+    }
+    .sidebar-logo { padding: 0 20px 24px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+    .sidebar-logo-name { font-size: 1rem; font-weight: 700; }
+    .sidebar-logo-sub  { font-size: 0.7rem; color: var(--gold); letter-spacing: 0.05em; }
+    .sidebar-label     { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 0 20px 8px; margin-top: 16px; }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 20px; font-size: 0.88rem; font-weight: 500; color: var(--muted);
+      cursor: pointer; transition: all 0.2s; border-left: 3px solid transparent; margin: 2px 0;
+    }
+    .nav-item:hover, .nav-item.active { color: var(--gold); background: var(--gold-g); border-left-color: var(--gold); }
+    .nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
+
+    /* Main */
+    .main { margin-left: 260px; flex: 1; display: flex; flex-direction: column; }
+
+    .topbar {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 16px 32px; display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 90;
+    }
+    .topbar h1 { font-size: 1.2rem; font-weight: 700; }
+    .topbar-actions { display: flex; gap: 10px; }
+
+    .content { padding: 32px; flex: 1; }
+
+    /* Panels */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* Cards */
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 20px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+
+    /* Form elements */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 0; }
+    .form-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+    .form-control {
+      background: var(--surface); border: 1.5px solid var(--border); color: var(--text);
+      padding: 10px 14px; border-radius: 8px; font-size: 0.9rem; font-family: inherit;
+      transition: all 0.2s; width: 100%;
+    }
+    .form-control:focus { outline: none; border-color: var(--gold); }
+    .form-full { grid-column: 1 / -1; }
+    .mt-16 { margin-top: 16px; }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; font-family: inherit; }
+    .btn-gold { background: linear-gradient(135deg, var(--gold), #e8c96a); color: #000; }
+    .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,168,76,0.35); }
+    .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-danger { background: rgba(255,91,91,0.12); border: 1px solid rgba(255,91,91,0.3); color: var(--red); }
+    .btn-sm { padding: 7px 14px; font-size: 0.8rem; }
+
+    /* Table */
+    .table { width: 100%; border-collapse: collapse; }
+    .table th { background: var(--surface); padding: 10px 14px; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); border-bottom: 1px solid var(--border); }
+    .table td { padding: 12px 14px; border-bottom: 1px solid rgba(201,168,76,0.07); font-size: 0.88rem; color: var(--muted); }
+    .table tr:hover td { background: var(--gold-g); color: var(--text); }
+
+    /* Badge */
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
+    .badge-gold { background: var(--gold-g); border: 1px solid var(--border); color: var(--gold); }
+    .badge-green { background: rgba(37,211,102,0.1); border: 1px solid rgba(37,211,102,0.3); color: var(--green); }
+    .badge-sample { background: rgba(255,165,0,0.1); border: 1px solid rgba(255,165,0,0.3); color: #ffa500; }
+
+    /* Alert */
+    .alert { padding: 14px 18px; border-radius: 10px; font-size: 0.88rem; margin-bottom: 16px; }
+    .alert-info { background: rgba(201,168,76,0.08); border: 1px solid var(--border); color: var(--gold); }
+    .alert-warn { background: rgba(255,165,0,0.08); border: 1px solid rgba(255,165,0,0.3); color: #ffa500; }
+    .alert-success { background: rgba(37,211,102,0.08); border: 1px solid rgba(37,211,102,0.3); color: var(--green); display: none; }
+    .alert-success.show { display: block; }
+
+    /* Stats row */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .stat-num { font-size: 1.8rem; font-weight: 800; color: var(--gold); }
+    .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+
+    /* Toggle */
+    .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; cursor: pointer; inset: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; transition: .3s; }
+    .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: var(--muted); border-radius: 50%; transition: .3s; }
+    .toggle input:checked + .toggle-slider { background: var(--gold-g); border-color: var(--gold); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(20px); background: var(--gold); }
+
+    /* Section header row */
+    .section-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .section-row h2 { font-size: 1.1rem; font-weight: 700; }
+
+    /* Amenity row */
+    .amenity-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(201,168,76,0.07); }
+    .amenity-row:last-child { border-bottom: none; }
+    .amenity-info { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div style="font-size: 1.4rem; margin-bottom: 8px;">🚌</div>
+    <div class="sidebar-logo-name">Kasturii Roadways</div>
+    <div class="sidebar-logo-sub">Admin Panel</div>
+  </div>
+
+  <div class="sidebar-label">Overview</div>
+  <div class="nav-item active" onclick="showPanel('dashboard')"><span class="icon">📊</span> Dashboard</div>
+
+  <div class="sidebar-label">Operations</div>
+  <div class="nav-item" onclick="showPanel('config')"><span class="icon">⚙️</span> Site Configuration</div>
+  <div class="nav-item" onclick="showPanel('routes')"><span class="icon">🗺</span> Routes</div>
+  <div class="nav-item" onclick="showPanel('coaches')"><span class="icon">🚌</span> Coaches</div>
+  <div class="nav-item" onclick="showPanel('amenities')"><span class="icon">✨</span> Amenities</div>
+
+  <div class="sidebar-label">Content</div>
+  <div class="nav-item" onclick="showPanel('faqs')"><span class="icon">❓</span> FAQs</div>
+
+  <div class="sidebar-label">Help</div>
+  <div class="nav-item" onclick="window.open('../index.html', '_blank')"><span class="icon">🌐</span> View Website</div>
+</aside>
+
+<!-- Main -->
+<div class="main">
+  <div class="topbar">
+    <h1 id="topbar-title">Dashboard</h1>
+    <div class="topbar-actions">
+      <button class="btn btn-outline btn-sm" onclick="window.open('../index.html', '_blank')">🌐 View Site</button>
+      <button class="btn btn-gold btn-sm" onclick="saveAll()">💾 Save Changes</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── Dashboard ───────────────────────────────────────── -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="alert alert-warn">
+        ⚠ This admin panel uses localStorage for demo purposes. In production, connect it to a backend API or CMS.
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="stat-routes">6</div><div class="stat-label">Routes Configured</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-coaches">3</div><div class="stat-label">Coach Types</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-amenities">13</div><div class="stat-label">Amenities Listed</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-faqs">10</div><div class="stat-label">FAQs</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🚀 Quick Actions</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <button class="btn btn-gold" onclick="showPanel('config')">⚙️ Update Config</button>
+          <button class="btn btn-outline" onclick="showPanel('routes')">🗺 Manage Routes</button>
+          <button class="btn btn-outline" onclick="showPanel('amenities')">✨ Toggle Amenities</button>
+          <button class="btn btn-outline" onclick="window.open('../index.html', '_blank')">🌐 View Website</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 Pending Setup Items</div>
+        <table class="table">
+          <thead><tr><th>Item</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>WhatsApp Number</td><td><span class="badge badge-sample">Placeholder</span></td><td><button class="btn btn-sm btn-outline" onclick="showPanel('config')">Configure</button></td></tr>
+            <tr><td>redBus Booking URL</td><td><span class="badge badge-sample">Placeholder</span></td><td><button class="btn btn-sm btn-outline" onclick="showPanel('config')">Configure</button></td></tr>
+            <tr><td>MakeMyTrip URL</td><td><span class="badge badge-sample">Placeholder</span></td><td><button class="btn btn-sm btn-outline" onclick="showPanel('config')">Configure</button></td></tr>
+            <tr><td>Support Phone Number</td><td><span class="badge badge-sample">Placeholder</span></td><td><button class="btn btn-sm btn-outline" onclick="showPanel('config')">Configure</button></td></tr>
+            <tr><td>Office Address</td><td><span class="badge badge-sample">Placeholder</span></td><td><button class="btn btn-sm btn-outline" onclick="showPanel('config')">Configure</button></td></tr>
+            <tr><td>Real Route Data</td><td><span class="badge badge-sample">Sample Data</span></td><td><button class="btn btn-sm btn-outline" onclick="showPanel('routes')">Update</button></td></tr>
+            <tr><td>Customer Reviews</td><td><span class="badge badge-sample">Awaiting</span></td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── Config ──────────────────────────────────────────── -->
+    <div class="panel" id="panel-config">
+      <div class="alert alert-info">💡 Update these values before going live. Changes are saved locally — push the updated config.js to your server to apply them.</div>
+      <div class="alert alert-success" id="config-saved">✅ Configuration saved! Remember to update config.js on your server.</div>
+
+      <div class="card">
+        <div class="card-title">📞 Contact & Booking</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">WhatsApp Number (with country code, no +)</label>
+            <input type="text" class="form-control" id="cfg-wa" placeholder="919XXXXXXXXX">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Support Phone Number</label>
+            <input type="text" class="form-control" id="cfg-phone" placeholder="+91-XXXXXXXXXX">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Support Email</label>
+            <input type="email" class="form-control" id="cfg-email" placeholder="support@kastuuriroadways.in">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Business Email</label>
+            <input type="email" class="form-control" id="cfg-bemail" placeholder="business@kastuuriroadways.in">
+          </div>
+          <div class="form-group form-full">
+            <label class="form-label">redBus Booking URL</label>
+            <input type="url" class="form-control" id="cfg-redbus" placeholder="https://www.redbus.in/...">
+          </div>
+          <div class="form-group form-full">
+            <label class="form-label">MakeMyTrip Booking URL</label>
+            <input type="url" class="form-control" id="cfg-mmt" placeholder="https://www.makemytrip.com/...">
+          </div>
+          <div class="form-group form-full">
+            <label class="form-label">Registered Office Address</label>
+            <input type="text" class="form-control" id="cfg-regoffice" placeholder="Full registered address">
+          </div>
+          <div class="form-group form-full">
+            <label class="form-label">Operational Office Address</label>
+            <input type="text" class="form-control" id="cfg-opoffice" placeholder="Full operational address">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔗 Social Media Links</div>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Facebook URL</label><input type="url" class="form-control" id="cfg-fb" placeholder="https://facebook.com/..."></div>
+          <div class="form-group"><label class="form-label">Instagram URL</label><input type="url" class="form-control" id="cfg-ig" placeholder="https://instagram.com/..."></div>
+          <div class="form-group"><label class="form-label">YouTube URL</label><input type="url" class="form-control" id="cfg-yt" placeholder="https://youtube.com/..."></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🗺 Google Maps</div>
+        <div class="form-group">
+          <label class="form-label">Google Maps Embed URL (from Google Maps → Share → Embed)</label>
+          <input type="url" class="form-control" id="cfg-map" placeholder="https://www.google.com/maps/embed?...">
+        </div>
+      </div>
+
+      <button class="btn btn-gold" onclick="saveConfig()">💾 Save Configuration</button>
+    </div>
+
+    <!-- ── Routes ──────────────────────────────────────────── -->
+    <div class="panel" id="panel-routes">
+      <div class="section-row">
+        <h2>🗺 Routes</h2>
+        <div style="display: flex; gap: 10px;">
+          <span class="badge badge-sample">Sample Data Active — Replace with real routes</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Current Routes</div>
+        <div id="routes-table-container">
+          <table class="table">
+            <thead><tr><th>From</th><th>To</th><th>Departure</th><th>Arrival</th><th>Coach</th><th>Fare</th><th>Status</th></tr></thead>
+            <tbody id="routes-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">➕ Add / Edit Route</div>
+        <div class="alert alert-info">To update routes, edit the <code style="background: var(--surface); padding: 2px 6px; border-radius: 4px;">ROUTES</code> array in <strong>js/config.js</strong> and redeploy.</div>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">From City</label><input type="text" class="form-control" placeholder="Bhubaneswar"></div>
+          <div class="form-group"><label class="form-label">To City</label><input type="text" class="form-control" placeholder="Puri"></div>
+          <div class="form-group"><label class="form-label">Departure Time</label><input type="text" class="form-control" placeholder="10:00 PM"></div>
+          <div class="form-group"><label class="form-label">Arrival Time</label><input type="text" class="form-control" placeholder="11:30 PM"></div>
+          <div class="form-group"><label class="form-label">Duration</label><input type="text" class="form-control" placeholder="1h 30m"></div>
+          <div class="form-group"><label class="form-label">Coach Type</label><select class="form-control"><option>AC Sleeper</option><option>AC Seater</option><option>Premium Night Coach</option></select></div>
+          <div class="form-group"><label class="form-label">Starting Fare (₹)</label><input type="text" class="form-control" placeholder="₹499"></div>
+        </div>
+        <div class="mt-16">
+          <button class="btn btn-outline btn-sm" disabled title="Connect to backend to enable">➕ Add Route (Requires Backend)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Coaches ─────────────────────────────────────────── -->
+    <div class="panel" id="panel-coaches">
+      <div class="section-row"><h2>🚌 Coaches</h2></div>
+      <div class="card">
+        <div class="card-title">Coach Types</div>
+        <div id="coaches-list"></div>
+      </div>
+      <div class="alert alert-info">To add new coach types or update details, edit the <code style="background: var(--surface); padding: 2px 6px; border-radius: 4px;">COACHES</code> array in <strong>js/config.js</strong>.</div>
+    </div>
+
+    <!-- ── Amenities ───────────────────────────────────────── -->
+    <div class="panel" id="panel-amenities">
+      <div class="section-row"><h2>✨ Amenities</h2></div>
+      <div class="alert alert-info">Toggle amenities shown on the website. Changes take effect after saving config.js.</div>
+      <div class="card">
+        <div class="card-title">Manage Amenities</div>
+        <div id="amenities-admin-list"></div>
+      </div>
+    </div>
+
+    <!-- ── FAQs ───────────────────────────────────────────── -->
+    <div class="panel" id="panel-faqs">
+      <div class="section-row"><h2>❓ FAQs</h2></div>
+      <div class="card">
+        <div class="card-title">Current FAQs</div>
+        <div id="faqs-admin-list"></div>
+      </div>
+      <div class="alert alert-info">To add or edit FAQs, update the <code style="background: var(--surface); padding: 2px 6px; border-radius: 4px;">FAQS</code> array in <strong>js/config.js</strong>.</div>
+    </div>
+
+  </div>
+</div>
+
+<script src="../js/config.js"></script>
+<script>
+  /* ── Navigation ─────────────────────────────────── */
+  const titles = {
+    dashboard: 'Dashboard', config: 'Site Configuration',
+    routes: 'Routes', coaches: 'Coaches',
+    amenities: 'Amenities', faqs: 'FAQs'
+  };
+
+  function showPanel(name) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.textContent.toLowerCase().includes(titles[name].toLowerCase().split(' ')[0])) {
+        n.classList.add('active');
+      }
+    });
+    document.getElementById('topbar-title').textContent = titles[name];
+  }
+
+  /* ── Load routes into table ─────────────────────── */
+  function loadRoutes() {
+    const tbody = document.getElementById('routes-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = CONFIG.ROUTES.map(r => `
+      <tr>
+        <td>${r.from}</td>
+        <td>${r.to}</td>
+        <td>${r.departure}</td>
+        <td>${r.arrival}</td>
+        <td><span class="badge badge-gold">${r.coachType}</span></td>
+        <td style="color: var(--gold); font-weight: 700;">${r.fare}</td>
+        <td>${r.sample ? '<span class="badge badge-sample">Sample</span>' : '<span class="badge badge-green">Live</span>'}</td>
+      </tr>
+    `).join('');
+    document.getElementById('stat-routes').textContent = CONFIG.ROUTES.length;
+  }
+
+  /* ── Load coaches ────────────────────────────────── */
+  function loadCoaches() {
+    const container = document.getElementById('coaches-list');
+    if (!container) return;
+    container.innerHTML = CONFIG.COACHES.map(c => `
+      <div class="amenity-row">
+        <div class="amenity-info">
+          <span>🚌</span>
+          <div>
+            <div style="font-weight: 600; font-size: 0.92rem;">${c.name}</div>
+            <div style="font-size: 0.8rem; color: var(--muted);">${c.description}</div>
+          </div>
+        </div>
+        <span class="badge ${c.available ? 'badge-green' : 'badge-sample'}">${c.available ? 'Active' : 'Inactive'}</span>
+      </div>
+    `).join('');
+    document.getElementById('stat-coaches').textContent = CONFIG.COACHES.filter(c => c.available).length;
+  }
+
+  /* ── Load amenities ──────────────────────────────── */
+  function loadAmenities() {
+    const container = document.getElementById('amenities-admin-list');
+    if (!container) return;
+    container.innerHTML = CONFIG.AMENITIES.map((a, i) => `
+      <div class="amenity-row">
+        <div class="amenity-info">
+          <span style="font-size: 1.4rem;">${a.icon}</span>
+          <span style="font-size: 0.92rem; font-weight: 500;">${a.label}</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="amenity-${i}" ${a.enabled ? 'checked' : ''} onchange="CONFIG.AMENITIES[${i}].enabled = this.checked">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    `).join('');
+    document.getElementById('stat-amenities').textContent = CONFIG.AMENITIES.filter(a => a.enabled).length;
+  }
+
+  /* ── Load FAQs ───────────────────────────────────── */
+  function loadFAQs() {
+    const container = document.getElementById('faqs-admin-list');
+    if (!container) return;
+    container.innerHTML = CONFIG.FAQS.map((f, i) => `
+      <div style="padding: 14px 0; border-bottom: 1px solid rgba(201,168,76,0.07);">
+        <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; color: var(--gold);">Q${i+1}: ${f.q}</div>
+        <div style="font-size: 0.85rem; color: var(--muted); line-height: 1.6;">${f.a}</div>
+      </div>
+    `).join('');
+    document.getElementById('stat-faqs').textContent = CONFIG.FAQS.length;
+  }
+
+  /* ── Save config ─────────────────────────────────── */
+  function saveConfig() {
+    const saved = {
+      WHATSAPP_NUMBER: document.getElementById('cfg-wa').value || CONFIG.WHATSAPP_NUMBER,
+      SUPPORT_PHONE: document.getElementById('cfg-phone').value || CONFIG.SUPPORT_PHONE,
+      SUPPORT_EMAIL: document.getElementById('cfg-email').value || CONFIG.SUPPORT_EMAIL,
+      BUSINESS_EMAIL: document.getElementById('cfg-bemail').value || CONFIG.BUSINESS_EMAIL,
+      REDBUS_BOOKING_URL: document.getElementById('cfg-redbus').value || CONFIG.REDBUS_BOOKING_URL,
+      MAKEMYTRIP_BOOKING_URL: document.getElementById('cfg-mmt').value || CONFIG.MAKEMYTRIP_BOOKING_URL,
+      REGISTERED_OFFICE: document.getElementById('cfg-regoffice').value || CONFIG.REGISTERED_OFFICE,
+      OPERATIONAL_OFFICE: document.getElementById('cfg-opoffice').value || CONFIG.OPERATIONAL_OFFICE,
+      SOCIAL: {
+        facebook: document.getElementById('cfg-fb').value || CONFIG.SOCIAL.facebook,
+        instagram: document.getElementById('cfg-ig').value || CONFIG.SOCIAL.instagram,
+        youtube: document.getElementById('cfg-yt').value || CONFIG.SOCIAL.youtube,
+      },
+      GOOGLE_MAP_EMBED_URL: document.getElementById('cfg-map').value || CONFIG.GOOGLE_MAP_EMBED_URL,
+    };
+
+    localStorage.setItem('kasturii_config', JSON.stringify(saved));
+    const alert = document.getElementById('config-saved');
+    alert.classList.add('show');
+    setTimeout(() => alert.classList.remove('show'), 4000);
+  }
+
+  function saveAll() { saveConfig(); }
+
+  /* ── Load saved config into form ─────────────────── */
+  function populateConfigForm() {
+    const stored = JSON.parse(localStorage.getItem('kasturii_config') || '{}');
+    const c = { ...CONFIG, ...stored };
+    document.getElementById('cfg-wa').value = c.WHATSAPP_NUMBER !== '919XXXXXXXXX' ? c.WHATSAPP_NUMBER : '';
+    document.getElementById('cfg-phone').value = c.SUPPORT_PHONE !== '+91-XXXXXXXXXX' ? c.SUPPORT_PHONE : '';
+    document.getElementById('cfg-email').value = c.SUPPORT_EMAIL || '';
+    document.getElementById('cfg-bemail').value = c.BUSINESS_EMAIL || '';
+    document.getElementById('cfg-redbus').value = c.REDBUS_BOOKING_URL !== '#' ? c.REDBUS_BOOKING_URL : '';
+    document.getElementById('cfg-mmt').value = c.MAKEMYTRIP_BOOKING_URL !== '#' ? c.MAKEMYTRIP_BOOKING_URL : '';
+    document.getElementById('cfg-regoffice').value = c.REGISTERED_OFFICE || '';
+    document.getElementById('cfg-opoffice').value = c.OPERATIONAL_OFFICE || '';
+    if (c.SOCIAL) {
+      document.getElementById('cfg-fb').value = c.SOCIAL.facebook !== '#' ? c.SOCIAL.facebook : '';
+      document.getElementById('cfg-ig').value = c.SOCIAL.instagram !== '#' ? c.SOCIAL.instagram : '';
+      document.getElementById('cfg-yt').value = c.SOCIAL.youtube !== '#' ? c.SOCIAL.youtube : '';
+    }
+    document.getElementById('cfg-map').value = c.GOOGLE_MAP_EMBED_URL || '';
+  }
+
+  /* ── Init ────────────────────────────────────────── */
+  loadRoutes();
+  loadCoaches();
+  loadAmenities();
+  loadFAQs();
+  populateConfigForm();
+</script>
+</body>
+</html>
