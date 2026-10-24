@@ -1,0 +1,38 @@
+{
+  "kind": "singleType",
+  "collectionName": "site_contents",
+  "info": {
+    "singularName": "site-content",
+    "pluralName": "site-contents",
+    "displayName": "site content"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "heroTitle": {
+      "type": "string"
+    },
+    "heroDescription": {
+      "type": "text"
+    },
+    "aboutUs": {
+      "type": "text"
+    },
+    "safetyInformation": {
+      "type": "text"
+    },
+    "journeyExperience": {
+      "type": "text"
+    },
+    "privacyPolicy": {
+      "type": "richtext"
+    },
+    "termsAndConditions": {
+      "type": "richtext"
+    },
+    "cancellationPolicy": {
+      "type": "richtext"
+    }
+  }
+}
