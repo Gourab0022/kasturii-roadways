@@ -1,3 +1,4 @@
 import type { Metadata } from 'next';
-export const metadata: Metadata = { title:'Kasturii Roadways | Luxury Night Coach', description:'Premium intercity night-coach journeys across Odisha.' };
-export default function RootLayout({children}:{children:React.ReactNode}) {return <html lang="en"><body style={{margin:0,fontFamily:'system-ui, sans-serif'}}>{children}</body></html>}
+import './globals.css';
+export const metadata: Metadata = { title:'Kasturii Roadways Private Limited | Luxury Night Coach Bus Service in Odisha', description:'Premium luxury night-coach travel across Odisha. Ride in Comfort, Travel in Pride.' };
+export default function RootLayout({children}:{children:React.ReactNode}) {return <html lang="en"><body>{children}</body></html>}
