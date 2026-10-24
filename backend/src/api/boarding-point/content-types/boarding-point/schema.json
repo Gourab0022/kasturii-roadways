@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "boarding_points",
+  "info": {
+    "singularName": "boarding-point",
+    "pluralName": "boarding-points",
+    "displayName": "boarding point"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "address": {
+      "type": "text"
+    },
+    "landmark": {
+      "type": "string"
+    },
+    "mapUrl": {
+      "type": "string"
+    },
+    "isActive": {
+      "type": "boolean"
+    },
+    "city": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::city.city"
+    }
+  }
+}
