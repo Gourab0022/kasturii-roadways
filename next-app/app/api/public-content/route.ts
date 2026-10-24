@@ -1,0 +1,4 @@
+import { db } from '@/lib/db';
+import { NextResponse } from 'next/server';
+export async function GET(){const [cities,routes,coaches,amenities,faqs,settings]=await Promise.all([db.city.findMany({where:{active:true}}),db.route.findMany({where:{published:true},include:{origin:true,destination:true}}),db.coach.findMany({where:{published:true}}),db.amenity.findMany({where:{published:true}}),db.faq.findMany({where:{published:true},orderBy:{sortOrder:'asc'}}),db.siteSetting.findUnique({where:{id:'main'}})]);
+return NextResponse.json({data:{cities:cities.map(x=>x.name),routes:routes.map(x=>({id:x.id,from:x.origin.name,to:x.destination.name})),coaches:coaches.map(x=>({name:x.name,description:x.description,image:x.imageUrl,features:JSON.parse(x.features)})),amenities,faqs,settings},meta:{liveSeats:false}})}

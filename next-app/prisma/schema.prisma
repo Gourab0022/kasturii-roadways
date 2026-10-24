@@ -1,0 +1,11 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+model AdminUser { id String @id @default(cuid()) email String @unique passwordHash String name String? createdAt DateTime @default(now()) }
+model City { id String @id @default(cuid()) name String @unique active Boolean @default(true) }
+model Route { id String @id @default(cuid()) originId String destinationId String origin City @relation("Origin",fields:[originId],references:[id]) destination City @relation("Destination",fields:[destinationId],references:[id]) schedules Schedule[] published Boolean @default(false) @@index([originId,destinationId]) }
+model Schedule { id String @id @default(cuid()) routeId String route Route @relation(fields:[routeId],references:[id]) coachId String? coach Coach? @relation(fields:[coachId],references:[id]) departure String arrival String fare Int? operatingDays String @default("[]") validFrom DateTime? validUntil DateTime? published Boolean @default(false) createdAt DateTime @default(now()) }
+model Coach { id String @id @default(cuid()) name String description String @default("") imageUrl String? features String @default("[]") published Boolean @default(false) schedules Schedule[] }
+model Amenity { id String @id @default(cuid()) label String icon String? published Boolean @default(false) }
+model Faq { id String @id @default(cuid()) question String answer String published Boolean @default(false) sortOrder Int @default(0) }
+model ContactSubmission { id String @id @default(cuid()) name String mobile String email String subject String message String status String @default("new") createdAt DateTime @default(now()) @@index([createdAt]) }
+model SiteSetting { id String @id @default("main") supportPhone String? whatsappNumber String? supportEmail String? businessEmail String? redbusUrl String? makemytripUrl String? updatedAt DateTime @updatedAt }
