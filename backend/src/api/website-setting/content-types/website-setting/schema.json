@@ -1,6 +1,6 @@
 {
   "kind": "singleType",
-  "collectionName": "website_settings",
+  "collectionName": "website_setting",
   "info": {
     "singularName": "website-setting",
     "pluralName": "website-settings",
