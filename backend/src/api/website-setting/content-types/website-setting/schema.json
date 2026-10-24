@@ -1,0 +1,65 @@
+{
+  "kind": "singleType",
+  "collectionName": "website_settings",
+  "info": {
+    "singularName": "website-setting",
+    "pluralName": "website-settings",
+    "displayName": "website setting"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "companyName": {
+      "type": "string"
+    },
+    "tagline": {
+      "type": "string"
+    },
+    "supportPhone": {
+      "type": "string"
+    },
+    "whatsappNumber": {
+      "type": "string"
+    },
+    "supportEmail": {
+      "type": "email"
+    },
+    "businessEmail": {
+      "type": "email"
+    },
+    "registeredOffice": {
+      "type": "text"
+    },
+    "operationalOffice": {
+      "type": "text"
+    },
+    "officeHours": {
+      "type": "string"
+    },
+    "redbusBookingUrl": {
+      "type": "string"
+    },
+    "makemytripBookingUrl": {
+      "type": "string"
+    },
+    "googleMapsUrl": {
+      "type": "string"
+    },
+    "facebookUrl": {
+      "type": "string"
+    },
+    "instagramUrl": {
+      "type": "string"
+    },
+    "youtubeUrl": {
+      "type": "string"
+    },
+    "seoTitle": {
+      "type": "string"
+    },
+    "seoDescription": {
+      "type": "text"
+    }
+  }
+}
