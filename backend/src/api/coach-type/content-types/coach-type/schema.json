@@ -1,0 +1,23 @@
+{
+  "kind": "collectionType",
+  "collectionName": "coach_types",
+  "info": {
+    "singularName": "coach-type",
+    "pluralName": "coach-types",
+    "displayName": "coach type"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "isActive": {
+      "type": "boolean"
+    }
+  }
+}
