@@ -1,0 +1,29 @@
+{
+  "name": "kasturii-next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "db:push": "prisma db push"
+  },
+  "dependencies": {
+    "next": "^15.5.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "@prisma/client": "^6.16.0",
+    "prisma": "^6.16.0",
+    "next-auth": "^5.0.0-beta.29",
+    "bcryptjs": "^3.0.2",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@types/bcryptjs": "^2.4.6"
+  }
+}
