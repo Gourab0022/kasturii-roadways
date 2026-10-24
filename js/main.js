@@ -437,8 +437,26 @@ function initContactForm() {
     btn.disabled = true;
     btn.textContent = 'Sending...';
 
-    // Simulate async submission (replace with real endpoint)
-    await new Promise(r => setTimeout(r, 1200));
+    // Persist the message on the Strapi backend. Never simulate success.
+    try {
+      const base = String(window.KASTURII_API_URL || '').replace(/\\/$/, '');
+      if (!base) throw new Error('Contact form is not configured yet. Please use phone or email.');
+      const response = await fetch(base + '/api/contact-submissions', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: {
+          name: form.querySelector('[name="name"]').value,
+          mobileNumber: form.querySelector('[name="mobile"]').value,
+          email: form.querySelector('[name="email"]').value,
+          subject: form.querySelector('[name="subject"]').value,
+          message: form.querySelector('[name="message"]').value
+        } })
+      });
+      if (!response.ok) throw new Error('Unable to send your message. Please try again.');
+    } catch (err) {
+      alert(err.message || 'Message could not be sent.');
+      btn.disabled = false; btn.textContent = 'Send Message';
+      return;
+    }
 
     btn.disabled = false;
     btn.textContent = 'Send Message';
