@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function Home(){return <main style={{background:'#10131a',color:'#eee7d8',minHeight:'100vh',padding:'10vh 8vw'}}><h1 style={{color:'#cba96a'}}>Kasturii Roadways</h1><p>Ride in Comfort, Travel in Pride.</p><p>This is the Next.js migration workspace. The original website remains unchanged while its design is ported.</p><Link style={{color:'#cba96a'}} href="/admin">Administration</Link></main>}
