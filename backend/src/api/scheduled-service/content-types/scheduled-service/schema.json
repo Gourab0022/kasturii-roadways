@@ -1,0 +1,68 @@
+{
+  "kind": "collectionType",
+  "collectionName": "scheduled_services",
+  "info": {
+    "singularName": "scheduled-service",
+    "pluralName": "scheduled-services",
+    "displayName": "scheduled service"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "serviceCode": {
+      "type": "string"
+    },
+    "departureTime": {
+      "type": "time"
+    },
+    "arrivalTime": {
+      "type": "time"
+    },
+    "arrivalDayOffset": {
+      "type": "integer"
+    },
+    "operatingDays": {
+      "type": "json"
+    },
+    "validFrom": {
+      "type": "date"
+    },
+    "validUntil": {
+      "type": "date"
+    },
+    "startingFare": {
+      "type": "decimal"
+    },
+    "currency": {
+      "type": "string",
+      "default": "INR"
+    },
+    "isActive": {
+      "type": "boolean"
+    },
+    "displayOrder": {
+      "type": "integer"
+    },
+    "route": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::route.route"
+    },
+    "coach": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::coach.coach"
+    },
+    "boardingPoints": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::boarding-point.boarding-point"
+    },
+    "droppingPoints": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::dropping-point.dropping-point"
+    }
+  }
+}
