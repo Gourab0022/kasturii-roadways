@@ -1,0 +1,9 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.cache/
+.tmp/
+build/
+dist/
+public/uploads/
