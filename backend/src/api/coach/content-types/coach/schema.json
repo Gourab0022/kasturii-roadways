@@ -1,0 +1,49 @@
+{
+  "kind": "collectionType",
+  "collectionName": "coachs",
+  "info": {
+    "singularName": "coach",
+    "pluralName": "coaches",
+    "displayName": "coach"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "coachCode": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "isActive": {
+      "type": "boolean"
+    },
+    "isFeatured": {
+      "type": "boolean"
+    },
+    "displayOrder": {
+      "type": "integer"
+    },
+    "coachType": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::coach-type.coach-type"
+    },
+    "amenities": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::amenity.amenity"
+    },
+    "gallery": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "dropping_points",
+  "info": {
+    "singularName": "dropping-point",
+    "pluralName": "dropping-points",
+    "displayName": "dropping point"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "address": {
+      "type": "text"
+    },
+    "landmark": {
+      "type": "string"
+    },
+    "mapUrl": {
+      "type": "string"
+    },
+    "isActive": {
+      "type": "boolean"
+    },
+    "city": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::city.city"
+    }
+  }
+}

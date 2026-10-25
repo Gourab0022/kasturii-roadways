@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "contact_submissions",
+  "info": {
+    "singularName": "contact-submission",
+    "pluralName": "contact-submissions",
+    "displayName": "contact submission"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "mobileNumber": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "message": {
+      "type": "text"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "new",
+        "in_progress",
+        "resolved"
+      ],
+      "default": "new"
+    },
+    "submittedAt": {
+      "type": "datetime"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "amenitys",
+  "info": {
+    "singularName": "amenity",
+    "pluralName": "amenities",
+    "displayName": "amenity"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid"
+    },
+    "description": {
+      "type": "text"
+    },
+    "icon": {
+      "type": "string"
+    },
+    "isActive": {
+      "type": "boolean"
+    },
+    "displayOrder": {
+      "type": "integer"
+    }
+  }
+}
